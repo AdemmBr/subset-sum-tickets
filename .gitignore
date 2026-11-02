@@ -1,0 +1,5 @@
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+data/coverage_n24_old.npz
