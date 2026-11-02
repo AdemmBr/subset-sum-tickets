@@ -4,17 +4,11 @@ How many random numbers do you need so that, by picking which ones to add up, yo
 
 ## In plain words
 
-A neural network is a big list of numbers (its weights), and training it means adjusting those numbers until it does what you want.
+A neural network is a list of numbers, its weights, and training adjusts them. A known result says that a large enough network with random weights already contains a good network: you only have to delete the right weights, without changing the others.
 
-It turns out you can skip the training: take a large network filled with random numbers, delete the right ones, and what is left works, with every remaining number exactly as it was drawn. This has been proved.
+The proof reduces this to a simpler question. Each weight of the network you want is rebuilt as a sum of some of the random weights. With $n$ random weights there are $2^n$ possible sums, so a few dozen are enough to get very close to any value. Lueker's lemma makes this precise: about $C \ln(1/\varepsilon)$ random numbers are enough for a precision $\varepsilon$. It doesn't give $C$, and the only explicit value I found in the literature is 1536.
 
-The reason it can work is easier to see with coins. Say you have a bag of coins with random weights and you need exactly 0.37 g on a scale. You can't file the coins down, you can only choose which ones go on the scale. With 2 coins there are 4 possible combinations and you will probably miss. With 20 coins there are about a million, and one of them will be very close to 0.37 g, whatever the target. Deleting weights in the network is the same as choosing coins.
-
-Each extra coin doubles the number of combinations, so you don't need many: being 10 times more precise only costs a few more coins. The math says the number of coins grows like $C$ times the number of digits of precision you want. The proofs don't say what $C$ is, and the only explicit value I found is $C = 1536$.
-
-I simulated it. $C$ is about 3.7 at a precision of $2^{-11}$ (roughly 1/2000) and still going down slowly. A heuristic argument, which I partly check numerically, says it should end up around 2.9. So in practice a random network needs far fewer extra weights than the proofs ask for.
-
-The rest goes through this in more detail.
+I measured $C$ by simulation. It is about 3.7 at a precision of $2^{-11}$ and still going down slowly, and a heuristic argument predicts it ends around 2.9. So in practice a random network needs far fewer extra weights than the proofs require.
 
 ## Lottery tickets
 
