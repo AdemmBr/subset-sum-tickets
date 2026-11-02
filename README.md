@@ -1,14 +1,8 @@
 # subset-sum-tickets
 
-How many random numbers do you need so that, by picking which ones to add up, you can get within $\varepsilon$ of any number in $[-1, 1]$? A lemma by Lueker says about $C \ln(1/\varepsilon)$, but I couldn't find a value for $C$ anywhere, so I measured it.
+The strong lottery ticket hypothesis says that a large enough random network contains a good subnetwork, found by pruning alone. Its proofs rely on a lemma by Lueker: $n \geq C \ln(1/\varepsilon)$ uniform random numbers are enough for their subset sums to approximate every point of $[-1, 1]$ within $\varepsilon$. The papers don't give $C$, and the only explicit value I found is 1536, from a proof that doesn't try to optimise it.
 
-## In plain words
-
-A neural network is a list of numbers, its weights, and training adjusts them. A known result says that a large enough network with random weights already contains a good network: you only have to delete the right weights, without changing the others.
-
-The proof reduces this to a simpler question. Each weight of the network you want is rebuilt as a sum of some of the random weights. With $n$ random weights there are $2^n$ possible sums, so a few dozen are enough to get very close to any value. Lueker's lemma makes this precise: about $C \ln(1/\varepsilon)$ random numbers are enough for a precision $\varepsilon$. It doesn't give $C$, and the only explicit value I found in the literature is 1536.
-
-I measured $C$ by simulation. It is about 3.7 at a precision of $2^{-11}$ and still going down slowly, and a heuristic argument predicts it ends around 2.9. So in practice a random network needs far fewer extra weights than the proofs require.
+I measured it. Over 20000 draws of 40 weights, $C$ goes from 4.81 at $\varepsilon = 2^{-3}$ to 3.67 at $2^{-11}$ and is still decreasing. A heuristic argument predicts $2 / \ln 2 \approx 2.89$.
 
 ## Lottery tickets
 
@@ -16,17 +10,17 @@ The lottery ticket hypothesis (Frankle and Carbin, 2019) says that a large netwo
 
 The strong version goes further. In a big enough random network you don't need to train at all: deleting the right weights is enough, and the weights you keep stay at their random initial values. Malach et al. (2020) and Pensia et al. (2020) proved it.
 
-The proof builds the target network one weight at a time. If the target needs a weight $w = 0.37$, the random network gets many paths in its place, each carrying a random value $x_i$, and you keep only some of them, so that
+The proof builds the target network one weight at a time. Each target weight $w$ is replaced by many paths in the random network, each carrying a random value $x_i$, and pruning keeps a subset $S$ of them such that
 
 $$w \approx \sum_{i \in S} x_i.$$
 
-How many paths you need per weight is how much bigger the random network has to be.
+The number of paths needed per weight is the factor by which the random network has to be larger than the target, which is where Lueker's lemma comes in.
 
 ## The lemma
 
 Lueker (1998): let $X_1, \dots, X_n$ be independent and uniform on $[-1, 1]$. There is a constant $C$ such that if $n \geq C \ln(1/\varepsilon)$, then with probability at least $1 - \varepsilon$, every $z \in [-1, 1]$ is within $\varepsilon$ of some subset sum $\sum_{i \in S} X_i$.
 
-The proof only shows that some $C$ works. A simple counting argument gives a lower bound: $n$ numbers have at most $2^n$ subset sums, and leaving no gap wider than $2\varepsilon$ in an interval of length 2 takes about $1/\varepsilon$ of them. So $2^n \gtrsim 1/\varepsilon$, which means $n \gtrsim \log_2(1/\varepsilon) \approx 1.44 \ln(1/\varepsilon)$. In practice it takes more, because the sums pile up in the middle and leave gaps.
+The proof only shows that some $C$ works. Counting gives a lower bound: $n$ numbers have at most $2^n$ subset sums, and leaving no gap wider than $2\varepsilon$ in an interval of length 2 takes about $1/\varepsilon$ of them. So $2^n \gtrsim 1/\varepsilon$, which means $n \gtrsim \log_2(1/\varepsilon) \approx 1.44 \ln(1/\varepsilon)$. In practice it takes more, because the sums pile up in the middle and leave gaps.
 
 ## What I measured
 
@@ -68,7 +62,7 @@ A model with nothing fitted, which treats the $2^n$ sums as random points with a
 
 This is a heuristic, not a proof.
 
-For a typical draw, the counting argument above gives about $\log_2(1/\varepsilon)$ weights, so $C \to 1/\ln 2 \approx 1.44$. The median grows by 1.2 per halving in the data, against 1 predicted.
+For a typical draw, the counting bound gives about $\log_2(1/\varepsilon)$ weights, so $C \to 1/\ln 2 \approx 1.44$. The median grows by 1.2 per halving in the data, against 1 predicted.
 
 The guarantee also has to cover the worst draws, the ones with a large imbalance $t$. Roughly, a fraction $\varepsilon$ of draws have $t^2/2 \gtrsim \ln(1/\varepsilon)$, and those have about $e^{-t^2/2} = \varepsilon$ times fewer sums near 0. Since each weight doubles the number of sums, making up for that costs another $\log_2(1/\varepsilon)$ weights, so $N \approx 2 \log_2(1/\varepsilon)$ and
 
