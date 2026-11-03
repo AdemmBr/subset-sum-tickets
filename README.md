@@ -2,7 +2,7 @@
 
 The strong lottery ticket hypothesis says that a large enough random network contains a good subnetwork, found by pruning alone. Its proofs rely on a lemma by Lueker: $n \geq C \ln(1/\varepsilon)$ uniform random numbers are enough for their subset sums to approximate every point of $[-1, 1]$ within $\varepsilon$. The papers don't give $C$, and the only explicit value I found is 1536, from a proof that doesn't try to optimise it.
 
-I measured it. Over 20000 draws of 40 weights, $C$ goes from 4.81 at $\varepsilon = 2^{-3}$ to 3.67 at $2^{-11}$ and is still decreasing. A heuristic argument predicts $2 / \ln 2 \approx 2.89$.
+I this projet, i tried to measure it.
 
 ## Lottery tickets
 
@@ -22,7 +22,7 @@ Lueker (1998): let $X_1, \dots, X_n$ be independent and uniform on $[-1, 1]$. Th
 
 The proof only shows that some $C$ works. Counting gives a lower bound: $n$ numbers have at most $2^n$ subset sums, and leaving no gap wider than $2\varepsilon$ in an interval of length 2 takes about $1/\varepsilon$ of them. So $2^n \gtrsim 1/\varepsilon$, which means $n \gtrsim \log_2(1/\varepsilon) \approx 1.44 \ln(1/\varepsilon)$. In practice it takes more, because the sums pile up in the middle and leave gaps.
 
-## What I measured
+## What I measured in this project
 
 For a draw of weights $x_1, x_2, \dots$, the covering radius $\rho_n$ is the worst error over $[-1, 1]$ when using the first $n$ weights:
 
@@ -59,8 +59,6 @@ A model with nothing fitted, which treats the $2^n$ sums as random points with a
 ![Share of draws covered against the number of weights](figures/transition.png)
 
 ## Where $C$ goes
-
-This is a heuristic, not a proof.
 
 For a typical draw, the counting bound gives about $\log_2(1/\varepsilon)$ weights, so $C \to 1/\ln 2 \approx 1.44$. The median grows by 1.2 per halving in the data, against 1 predicted.
 
