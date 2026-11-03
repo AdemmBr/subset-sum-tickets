@@ -2,7 +2,7 @@
 
 The strong lottery ticket hypothesis says that a large enough random network contains a good subnetwork, found by pruning alone. Its proofs rely on a lemma by Lueker: $n \geq C \ln(1/\varepsilon)$ uniform random numbers are enough for their subset sums to approximate every point of $[-1, 1]$ within $\varepsilon$. The papers don't give $C$, and the only explicit value I found is 1536, from a proof that doesn't try to optimise it.
 
-I this projet, i tried to measure it.
+In this projet, i tried to measure it.
 
 ## Lottery tickets
 
